@@ -1,5 +1,135 @@
 return {
+  {
+    "mfussenegger/nvim-dap",
+  },
+  {
+    "mfussenegger/nvim-dap-python",
+    dependencies = {
+      "mfussenegger/nvim-dap",
+    },
+    config = function(_, opts)
+      require("dap-python").setup("~/.virtualenvs/debugpy/bin/python")
+      require("dap-python").test_runner = "pytest"
+    end,
+  },
+  {
+    "mxsdev/nvim-dap-vscode-js",
+    dependencies = {
+      "mfussenegger/nvim-dap",
+      "microsoft/vscode-js-debug",
+    },
+    config = function(_, opts)
+      require("dap-vscode-js").setup({
+        -- node_path = "node", -- Path of node executable. Defaults to $NODE_PATH, and then "node"
+        debugger_path = "/home/rodrigokimura/vscode-js-debug/", -- Path to vscode-js-debug installation.
+        -- debugger_cmd = { "js-debug-adapter" }, -- Command to use to launch the debug server. Takes precedence over `node_path` and `debugger_path`.
+        adapters = { "pwa-node", "pwa-chrome", "pwa-msedge", "node-terminal", "pwa-extensionHost" }, -- which adapters to register in nvim-dap
+        -- log_file_path = "(stdpath cache)/dap_vscode_js.log" -- Path for file logging
+        -- log_file_level = false -- Logging level for output to file. Set to false to disable file logging.
+        -- log_console_level = vim.log.levels.ERROR -- Logging level for output to console. Set to false to disable console output.
+      })
 
+      local dap = require("dap")
+
+      -- custom adapter for running tasks before starting debug
+      -- local custom_adapter = "pwa-node-custom"
+      -- dap.adapters[custom_adapter] = function(cb, config)
+      --   if config.preLaunchTask then
+      --     local async = require("plenary.async")
+      --     local notify = require("notify").async
+      --
+      --     async.run(function()
+      --       ---@diagnostic disable-next-line: missing-parameter
+      --       notify("Running [" .. config.preLaunchTask .. "]").events.close()
+      --     end, function()
+      --       vim.fn.system(config.preLaunchTask)
+      --       config.type = "pwa-node"
+      --       dap.run(config)
+      --     end)
+      --   end
+      -- end
+
+      for _, language in ipairs({ "typescript", "javascript" }) do
+        dap.configurations[language] = {
+          {
+            type = "pwa-node",
+            request = "launch",
+            name = "Launch file",
+            program = "${file}",
+            cwd = "${workspaceFolder}",
+          },
+          {
+            type = "pwa-node",
+            request = "launch",
+            name = "Launch nest",
+            program = "npm run start:debug",
+            cwd = "${workspaceFolder}",
+          },
+          {
+            type = "pwa-node",
+            request = "attach",
+            name = "Attach",
+            processId = require("dap.utils").pick_process,
+            cwd = "${workspaceFolder}",
+          },
+          {
+            type = "pwa-node",
+            request = "launch",
+            name = "Debug Nestjs",
+            -- trace = true, -- include debugger info
+            runtimeExecutable = "node",
+            runtimeArgs = {
+              "./node_modules/@nestjs/cli/bin/nest.js",
+              "start",
+              "--debug",
+            },
+            rootPath = "${workspaceFolder}",
+            cwd = "${workspaceFolder}",
+            console = "integratedTerminal",
+            internalConsoleOptions = "neverOpen",
+          },
+          {
+            type = "pwa-node",
+            request = "launch",
+            name = "Debug Jest Tests",
+            -- trace = true, -- include debugger info
+            runtimeExecutable = "node",
+            runtimeArgs = {
+              "--inspect-brk",
+              "./node_modules/jest/bin/jest.js",
+              "--runInBand",
+            },
+            rootPath = "${workspaceFolder}",
+            cwd = "${workspaceFolder}",
+            console = "integratedTerminal",
+            internalConsoleOptions = "neverOpen",
+          },
+        }
+      end
+    end,
+  },
+  {
+    "rcarriga/nvim-dap-ui",
+    dependencies = {
+      "mfussenegger/nvim-dap",
+      "folke/neodev.nvim",
+    },
+    config = function(_, opts)
+      require("neodev").setup({
+        library = { plugins = { "nvim-dap-ui" }, types = true },
+      })
+      require("dapui").setup()
+    end,
+    keys = {
+      {
+        "<leader>dd",
+        function()
+          require("dapui").toggle()
+        end,
+        desc = "Toggle debugger",
+      },
+    },
+  },
   -- snippets
   {
     "L3MON4D3/LuaSnip",

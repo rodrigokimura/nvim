@@ -73,9 +73,6 @@ return {
       { "<leader>ff", Util.telescope("files"), desc = "Find Files (root dir)" },
       { "<leader>fF", Util.telescope("files", { cwd = false }), desc = "Find Files (cwd)" },
       { "<leader>fr", "<cmd>Telescope oldfiles<cr>", desc = "Recent" },
-      -- git
-      { "<leader>gc", "<cmd>Telescope git_commits<CR>", desc = "commits" },
-      { "<leader>gs", "<cmd>Telescope git_status<CR>", desc = "status" },
       -- search
       { "<leader>sa", "<cmd>Telescope autocommands<cr>", desc = "Auto Commands" },
       { "<leader>sb", "<cmd>Telescope current_buffer_fuzzy_find<cr>", desc = "Buffer" },
@@ -236,13 +233,20 @@ return {
         ["<leader>b"] = { name = "+buffer" },
         ["<leader>c"] = { name = "+code" },
         ["<leader>f"] = { name = "+file/find" },
-        ["<leader>g"] = { name = "+git" },
-        ["<leader>gh"] = { name = "+hunks" },
         ["<leader>q"] = { name = "+quit/session" },
         ["<leader>s"] = { name = "+search" },
         ["<leader>u"] = { name = "+ui" },
         ["<leader>w"] = { name = "+windows" },
         ["<leader>x"] = { name = "+diagnostics/quickfix" },
+        ["<leader>g"] = {
+          name = "+git",
+          B = { "<cmd>Telescope git_branches<cr>", "Checkout branch" },
+          c = { "<cmd>Telescope git_commits<cr>", "Checkout commit" },
+          C = {
+            "<cmd>Telescope git_bcommits<cr>",
+            "Checkout commit(for current file)",
+          },
+        },
       }
       if Util.has("noice.nvim") then
         keymaps["<leader>sn"] = { name = "+noice" }
@@ -266,23 +270,23 @@ return {
       },
       on_attach = function(buffer)
         local gs = package.loaded.gitsigns
-
+        local prefix = "<leader>g"
         local function map(mode, l, r, desc)
           vim.keymap.set(mode, l, r, { buffer = buffer, desc = desc })
         end
 
         -- stylua: ignore start
-        map("n", "]h", gs.next_hunk, "Next Hunk")
-        map("n", "[h", gs.prev_hunk, "Prev Hunk")
-        map({ "n", "v" }, "<leader>ghs", ":Gitsigns stage_hunk<CR>", "Stage Hunk")
-        map({ "n", "v" }, "<leader>ghr", ":Gitsigns reset_hunk<CR>", "Reset Hunk")
-        map("n", "<leader>ghS", gs.stage_buffer, "Stage Buffer")
-        map("n", "<leader>ghu", gs.undo_stage_hunk, "Undo Stage Hunk")
-        map("n", "<leader>ghR", gs.reset_buffer, "Reset Buffer")
-        map("n", "<leader>ghp", gs.preview_hunk, "Preview Hunk")
-        map("n", "<leader>ghb", function() gs.blame_line({ full = true }) end, "Blame Line")
-        map("n", "<leader>ghd", gs.diffthis, "Diff This")
-        map("n", "<leader>ghD", function() gs.diffthis("~") end, "Diff This ~")
+        map("n", prefix.."k", gs.prev_hunk, "Prev Hunk")
+        map("n", prefix.."j", gs.next_hunk, "Next Hunk")
+        map("n", prefix.."p", gs.preview_hunk, "Preview Hunk")
+        map("n", prefix.."b", function() gs.blame_line({ full = true }) end, "Blame Line")
+        map({ "n", "v" }, prefix.."s", ":Gitsigns stage_hunk<CR>", "Stage Hunk")
+        map({ "n", "v" }, prefix.."r", ":Gitsigns reset_hunk<CR>", "Reset Hunk")
+        map("n", prefix.."S", gs.stage_buffer, "Stage Buffer")
+        map("n", prefix.."u", gs.undo_stage_hunk, "Undo Stage Hunk")
+        map("n", prefix.."R", gs.reset_buffer, "Reset Buffer")
+        map("n", prefix.."d", gs.diffthis, "Diff This")
+        map("n", prefix.."D", function() gs.diffthis("~") end, "Diff This ~")
         map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", "GitSigns Select Hunk")
       end,
     },

@@ -2,11 +2,26 @@
 -- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
 -- Add any additional keymaps here
 
+-- Debugger
+local dap = require("dap")
+vim.keymap.set("n", "<leader>d<space>", dap.continue, { desc = "Continue" })
+vim.keymap.set("n", "<leader>dj", dap.step_over, { desc = "Step over" })
+vim.keymap.set("n", "<leader>dl", dap.step_into, { desc = "Step into" })
+vim.keymap.set("n", "<leader>dh", dap.step_out, { desc = "Step out" })
+vim.keymap.set("n", "<Leader>db", dap.toggle_breakpoint, { desc = "Toggle breakpoints" })
+vim.keymap.set("n", "<Leader>dl", function()
+  dap.set_breakpoint(nil, nil, vim.fn.input("Log point message: "))
+end, { desc = "Set logpoint" })
+vim.keymap.set("n", "<leader>dm", require("dap-python").test_method, { desc = "Debug test method" })
+vim.keymap.set("n", "<leader>dc", require("dap-python").test_class, { desc = "Debug test class" })
+
+-- Resize terminal
+vim.keymap.set("t", "<A-k>", "<cmd>resize +2<cr>", { desc = "Increase window height" })
+vim.keymap.set("t", "<A-j>", "<cmd>resize -2<cr>", { desc = "Decrease window height" })
+
 -- Resize window
-vim.keymap.set("n", "<A-Up>", "<cmd>resize +2<cr>", { desc = "Increase window height" })
-vim.keymap.set("n", "<A-Down>", "<cmd>resize -2<cr>", { desc = "Decrease window height" })
-vim.keymap.set("n", "<SA-Left>", "<cmd>vertical resize +2<cr>", { desc = "Increase window width" })
-vim.keymap.set("n", "<A-Right>", "<cmd>vertical resize -2<cr>", { desc = "Decrease window width" })
+vim.keymap.set("n", "<A-h>", "<cmd>vertical resize +2<cr>", { desc = "Increase window width" })
+vim.keymap.set("n", "<A-l>", "<cmd>vertical resize -2<cr>", { desc = "Decrease window width" })
 
 vim.keymap.set({ "n", "i", "v" }, "<C-w>", function()
   require("mini.bufremove").delete(0, false)

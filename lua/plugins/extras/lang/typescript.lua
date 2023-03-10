@@ -13,7 +13,7 @@ return {
   -- correctly setup lspconfig
   {
     "neovim/nvim-lspconfig",
-    dependencies = { "jose-elias-alvarez/typescript.nvim" },
+    dependencies = { "jose-elias-alvarez/typescript.nvim", "MunifTanjim/prettier.nvim" },
     opts = {
       -- make sure mason installs the server
       servers = {
@@ -25,10 +25,16 @@ return {
             if client.name == "tsserver" then
               -- stylua: ignore
               vim.keymap.set("n", "<leader>co", "<cmd>TypescriptOrganizeImports<CR>", { buffer = buffer, desc = "Organize Imports" })
-              vim.keymap.set("n", "<leader>cR", "<cmd>TypescriptRenameFile<CR>", { desc = "Rename File", buffer = buffer })
+              vim.keymap.set(
+                "n",
+                "<leader>cR",
+                "<cmd>TypescriptRenameFile<CR>",
+                { desc = "Rename File", buffer = buffer }
+              )
             end
           end)
           require("typescript").setup({ server = opts })
+          require("prettier").setup()
           return true
         end,
       },
