@@ -268,6 +268,7 @@ return {
         changedelete = { text = "▎" },
         untracked = { text = "▎" },
       },
+
       on_attach = function(buffer)
         local gs = package.loaded.gitsigns
         local prefix = "<leader>g"

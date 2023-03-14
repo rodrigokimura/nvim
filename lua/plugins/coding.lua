@@ -2,6 +2,7 @@ return {
   {
     "mfussenegger/nvim-dap",
   },
+  { "David-Kunz/jester" },
   {
     "mfussenegger/nvim-dap-python",
     dependencies = {
@@ -13,6 +14,10 @@ return {
     end,
   },
   {
+    "microsoft/vscode-js-debug",
+    build = "npm install --legacy-peer-deps && npx gulp vsDebugServerBundle && mv dist out",
+  },
+  {
     "mxsdev/nvim-dap-vscode-js",
     dependencies = {
       "mfussenegger/nvim-dap",
@@ -21,7 +26,7 @@ return {
     config = function(_, opts)
       require("dap-vscode-js").setup({
         -- node_path = "node", -- Path of node executable. Defaults to $NODE_PATH, and then "node"
-        debugger_path = "/home/rodrigokimura/vscode-js-debug/", -- Path to vscode-js-debug installation.
+        debugger_path = "/home/rodrigokimura/.local/share/nvim/lazy/vscode-js-debug", -- Path to vscode-js-debug installation.
         -- debugger_cmd = { "js-debug-adapter" }, -- Command to use to launch the debug server. Takes precedence over `node_path` and `debugger_path`.
         adapters = { "pwa-node", "pwa-chrome", "pwa-msedge", "node-terminal", "pwa-extensionHost" }, -- which adapters to register in nvim-dap
         -- log_file_path = "(stdpath cache)/dap_vscode_js.log" -- Path for file logging
@@ -31,24 +36,6 @@ return {
 
       local dap = require("dap")
 
-      -- custom adapter for running tasks before starting debug
-      -- local custom_adapter = "pwa-node-custom"
-      -- dap.adapters[custom_adapter] = function(cb, config)
-      --   if config.preLaunchTask then
-      --     local async = require("plenary.async")
-      --     local notify = require("notify").async
-      --
-      --     async.run(function()
-      --       ---@diagnostic disable-next-line: missing-parameter
-      --       notify("Running [" .. config.preLaunchTask .. "]").events.close()
-      --     end, function()
-      --       vim.fn.system(config.preLaunchTask)
-      --       config.type = "pwa-node"
-      --       dap.run(config)
-      --     end)
-      --   end
-      -- end
-
       for _, language in ipairs({ "typescript", "javascript" }) do
         dap.configurations[language] = {
           {
@@ -56,13 +43,6 @@ return {
             request = "launch",
             name = "Launch file",
             program = "${file}",
-            cwd = "${workspaceFolder}",
-          },
-          {
-            type = "pwa-node",
-            request = "launch",
-            name = "Launch nest",
-            program = "npm run start:debug",
             cwd = "${workspaceFolder}",
           },
           {
@@ -79,7 +59,7 @@ return {
             -- trace = true, -- include debugger info
             runtimeExecutable = "node",
             runtimeArgs = {
-              "./node_modules/@nestjs/cli/bin/nest.js",
+              "./node_modules/.bin/nest",
               "start",
               "--debug",
             },
@@ -96,7 +76,7 @@ return {
             runtimeExecutable = "node",
             runtimeArgs = {
               "--inspect-brk",
-              "./node_modules/jest/bin/jest.js",
+              "./node_modules/.bin/jest",
               "--runInBand",
             },
             rootPath = "${workspaceFolder}",
@@ -280,10 +260,10 @@ return {
   -- better text-objects
   {
     "echasnovski/mini.ai",
-    -- keys = {
-    --   { "a", mode = { "x", "o" } },
-    --   { "i", mode = { "x", "o" } },
-    -- },
+    keys = {
+      { "a", mode = { "x", "o" } },
+      { "i", mode = { "x", "o" } },
+    },
     event = "VeryLazy",
     dependencies = { "nvim-treesitter-textobjects" },
     opts = function()
