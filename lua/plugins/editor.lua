@@ -1,7 +1,16 @@
 local Util = require("lazyvim.util")
 
 return {
-
+  {
+    "brenoprata10/nvim-highlight-colors",
+    config = function(_, opts)
+      require("nvim-highlight-colors").setup({
+        render = "background", -- or 'foreground' or 'first_column'
+        enable_named_colors = true,
+        enable_tailwind = false,
+      })
+    end,
+  },
   -- file explorer
   {
     "nvim-neo-tree/neo-tree.nvim",
@@ -91,6 +100,7 @@ return {
       { "<leader>sw", Util.telescope("grep_string"), desc = "Word (root dir)" },
       { "<leader>sW", Util.telescope("grep_string", { cwd = false }), desc = "Word (cwd)" },
       { "<leader>uC", Util.telescope("colorscheme", { enable_preview = true }), desc = "Colorscheme with preview" },
+      { "<leader>uff", "<cmd>LazyGitFilterCurrentFile<CR>", desc = "Colorscheme with preview" },
       {
         "<leader>ss",
         Util.telescope("lsp_document_symbols", {
