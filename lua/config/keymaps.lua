@@ -20,8 +20,10 @@ vim.keymap.set("t", "<A-k>", "<cmd>resize +2<cr>", { desc = "Increase window hei
 vim.keymap.set("t", "<A-j>", "<cmd>resize -2<cr>", { desc = "Decrease window height" })
 
 -- Resize window
-vim.keymap.set("n", "<A-h>", "<cmd>vertical resize +2<cr>", { desc = "Increase window width" })
-vim.keymap.set("n", "<A-l>", "<cmd>vertical resize -2<cr>", { desc = "Decrease window width" })
+vim.keymap.set("n", "<SA-h>", "<cmd>vertical resize +2<cr>", { desc = "Increase window width" })
+vim.keymap.set("n", "<SA-l>", "<cmd>vertical resize -2<cr>", { desc = "Decrease window width" })
+vim.keymap.set("n", "<SA-j>", "<cmd>resize +2<cr>", { desc = "Increase window height" })
+vim.keymap.set("n", "<SA-k>", "<cmd>resize -2<cr>", { desc = "Decrease window height" })
 
 vim.keymap.set({ "n", "i", "v" }, "<C-w>", function()
   require("mini.bufremove").delete(0, false)
