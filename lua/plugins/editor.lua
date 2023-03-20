@@ -46,6 +46,7 @@ return {
       end
     end,
     opts = {
+      enable_git_status = true,
       filesystem = {
         bind_to_cwd = false,
         follow_current_file = true,
@@ -53,6 +54,21 @@ return {
       window = {
         mappings = {
           ["<space>"] = "none",
+        },
+      },
+      default_component_configs = {
+        git_status = {
+          symbols = {
+            added = "+",
+            modified = "M",
+            deleted = "-",
+            renamed = "R",
+            untracked = "",
+            ignored = "",
+            unstaged = "",
+            staged = "",
+            conflict = "",
+          },
         },
       },
     },

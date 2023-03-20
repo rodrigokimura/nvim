@@ -61,6 +61,9 @@ return {
       options = {
         diagnostics = "nvim_lsp",
         always_show_bufferline = true,
+        indicator = {
+          style = "underline",
+        },
         diagnostics_indicator = function(_, _, diag)
           local icons = require("lazyvim.config").icons.diagnostics
           local ret = (diag.error and icons.Error .. diag.error .. " " or "")
@@ -75,6 +78,15 @@ return {
             text_align = "left",
           },
         },
+        separator_style = "thin",
+        hover = {
+          enabled = true,
+          delay = 200,
+          reveal = { "close" },
+        },
+        middle_mouse_command = function(bufnum)
+          require("mini.bufremove").delete(bufnum, false)
+        end,
       },
     },
   },
