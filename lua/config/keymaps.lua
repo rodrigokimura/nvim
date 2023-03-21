@@ -12,8 +12,13 @@ vim.keymap.set("n", "<Leader>db", dap.toggle_breakpoint, { desc = "Toggle breakp
 vim.keymap.set("n", "<Leader>dl", function()
   dap.set_breakpoint(nil, nil, vim.fn.input("Log point message: "))
 end, { desc = "Set logpoint" })
+
 vim.keymap.set("n", "<leader>dm", require("dap-python").test_method, { desc = "Debug test method" })
 vim.keymap.set("n", "<leader>dc", require("dap-python").test_class, { desc = "Debug test class" })
+vim.keymap.set("n", "<leader>dt", function()
+  require("neotest").run.run({ strategy = "dap" })
+end, { desc = "Debug nearest test" })
+vim.keymap.set("n", "<leader>ct", require("neotest").summary.toggle, { desc = "Toggle test summary" })
 
 -- Resize terminal
 vim.keymap.set("t", "<A-k>", "<cmd>resize +2<cr>", { desc = "Increase window height" })
