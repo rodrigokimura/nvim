@@ -20,6 +20,10 @@ return {
             end,
           }),
           require("neotest-python")({
+            runner = "pytest",
+            env = {
+              PYTHONPATH = ".",
+            },
             is_test_file = function(filepath)
               return string.sub(filepath, -3) == ".py"
                 and (string.sub(filepath, -8) == "tests.py" or not not string.find(filepath, "test_", 0, true))

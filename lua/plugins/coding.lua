@@ -1,6 +1,23 @@
 return {
   {
     "mfussenegger/nvim-dap",
+    config = function(_, opts)
+      local dap = require("dap")
+      dap.adapters.godot = {
+        type = "server",
+        host = "127.0.0.1",
+        port = 6007,
+      }
+      dap.configurations.gdscript = {
+        {
+          type = "godot",
+          request = "launch",
+          name = "Launch scene",
+          project = "${workspaceFolder}",
+          launch_scene = true,
+        },
+      }
+    end,
   },
   { "David-Kunz/jester" },
   {
@@ -11,11 +28,27 @@ return {
     config = function(_, opts)
       require("dap-python").setup("~/.virtualenvs/debugpy/bin/python")
       require("dap-python").test_runner = "pytest"
+      table.insert(require("dap").configurations.python, {
+        type = "python",
+        request = "launch",
+        name = "Uvicorn",
+        module = "uvicorn",
+        args = {
+          "app:app",
+          -- "--host=0.0.0.0",
+          "--port=5000",
+          -- "--reload",
+          "--env-file",
+          ".env",
+        },
+        -- ... more options, see https://github.com/microsoft/debugpy/wiki/Debug-configuration-settings
+      })
     end,
   },
   {
     "microsoft/vscode-js-debug",
     build = "npm install --legacy-peer-deps && npx gulp vsDebugServerBundle && rm -rf out && mv dist out",
+    branch = "main",
   },
   {
     "mxsdev/nvim-dap-vscode-js",
